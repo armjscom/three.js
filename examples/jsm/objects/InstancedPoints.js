@@ -1,8 +1,8 @@
-import {
-	Mesh
-} from 'three';
+import { Mesh } from 'three';
+
+import { InstancedPointsNodeMaterial } from 'three/tsl';
+
 import InstancedPointsGeometry from '../geometries/InstancedPointsGeometry.js';
-import InstancedPointsNodeMaterial from '../nodes/materials/InstancedPointsNodeMaterial.js';
 
 class InstancedPoints extends Mesh {
 

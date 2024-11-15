@@ -99,11 +99,13 @@
 			},
 
 			"Extras": {
+				"Controls": "api/en/extras/Controls",
 				"DataUtils": "api/en/extras/DataUtils",
 				"Earcut": "api/en/extras/Earcut",
 				"ImageUtils": "api/en/extras/ImageUtils",
 				"PMREMGenerator": "api/en/extras/PMREMGenerator",
-				"ShapeUtils": "api/en/extras/ShapeUtils"
+				"ShapeUtils": "api/en/extras/ShapeUtils",
+				"TextureUtils": "api/en/extras/TextureUtils"
 			},
 
 			"Extras / Core": {
@@ -240,6 +242,7 @@
 				"Interpolant": "api/en/math/Interpolant",
 				"Line3": "api/en/math/Line3",
 				"MathUtils": "api/en/math/MathUtils",
+				"Matrix2": "api/en/math/Matrix2",
 				"Matrix3": "api/en/math/Matrix3",
 				"Matrix4": "api/en/math/Matrix4",
 				"Plane": "api/en/math/Plane",
@@ -264,6 +267,7 @@
 			"Objects": {
 				"BatchedMesh": "api/en/objects/BatchedMesh",
 				"Bone": "api/en/objects/Bone",
+				"ClippingGroup": "api/en/objects/ClippingGroup",
 				"Group": "api/en/objects/Group",
 				"InstancedMesh": "api/en/objects/InstancedMesh",
 				"Line": "api/en/objects/Line",
@@ -343,8 +347,8 @@
 				"ConvexGeometry": "examples/en/geometries/ConvexGeometry",
 				"DecalGeometry": "examples/en/geometries/DecalGeometry",
 				"ParametricGeometry": "examples/en/geometries/ParametricGeometry",
-				"TextGeometry": "examples/en/geometries/TextGeometry",
-				"SDFGeometryGenerator": "examples/en/geometries/SDFGeometryGenerator"
+				"TeapotGeometry": "examples/en/geometries/TeapotGeometry",
+				"TextGeometry": "examples/en/geometries/TextGeometry"
 			},
 
 			"Helpers": {
@@ -357,6 +361,14 @@
 
 			"Lights": {
 				"LightProbeGenerator": "examples/en/lights/LightProbeGenerator"
+			},
+
+			"Lines": {
+				"Line2": "examples/en/lines/Line2",
+				"LineGeometry": "examples/en/lines/LineGeometry",
+				"LineMaterial": "examples/en/lines/LineMaterial",
+				"LineSegments2": "examples/en/lines/LineSegments2",
+				"LineSegmentsGeometry": "examples/en/lines/LineSegmentsGeometry"
 			},
 
 			"Loaders": {
@@ -430,7 +442,7 @@
 				"SceneUtils": "examples/en/utils/SceneUtils",
 				"SkeletonUtils": "examples/en/utils/SkeletonUtils"
 			},
-			
+
 			"WebXR": {
 				"XREstimatedLight": "examples/en/webxr/XREstimatedLight"
 			}
@@ -850,11 +862,13 @@
 			},
 
 			"附件": {
+				"Controls": "api/zh/extras/Controls",
 				"DataUtils": "api/zh/extras/DataUtils",
 				"Earcut": "api/zh/extras/Earcut",
 				"ImageUtils": "api/zh/extras/ImageUtils",
 				"PMREMGenerator": "api/zh/extras/PMREMGenerator",
-				"ShapeUtils": "api/zh/extras/ShapeUtils"
+				"ShapeUtils": "api/zh/extras/ShapeUtils",
+				"TextureUtils": "api/zh/extras/TextureUtils"
 			},
 
 			"附件 / 核心": {
@@ -1094,8 +1108,8 @@
 				"ConvexGeometry": "examples/zh/geometries/ConvexGeometry",
 				"DecalGeometry": "examples/zh/geometries/DecalGeometry",
 				"ParametricGeometry": "examples/zh/geometries/ParametricGeometry",
-				"TextGeometry": "examples/zh/geometries/TextGeometry",
-				"SDFGeometryGenerator": "examples/zh/geometries/SDFGeometryGenerator"
+				"TeapotGeometry": "examples/zh/geometries/TeapotGeometry",
+				"TextGeometry": "examples/zh/geometries/TextGeometry"
 			},
 
 			"辅助对象": {
@@ -1208,6 +1222,7 @@
 				"선 그리기": "manual/ko/introduction/Drawing-lines",
 				"텍스트 만들기": "manual/ko/introduction/Creating-text",
 				"3D 모델 불러오기": "manual/ko/introduction/Loading-3D-models",
+				"라이브러리 및 플러그인": "manual/en/introduction/Libraries-and-Plugins",
 				"FAQ": "manual/ko/introduction/FAQ",
 				"참고 링크": "manual/ko/introduction/Useful-links"
 			},
@@ -1352,15 +1367,20 @@
 		"Addons": {
 
 			"컨트롤": {
+				"ArcballControls": "examples/ko/controls/ArcballControls",
 				"DragControls": "examples/ko/controls/DragControls",
 				"FirstPersonControls": "examples/ko/controls/FirstPersonControls",
 				"FlyControls": "examples/ko/controls/FlyControls",
+				"MapControls": "examples/ko/controls/MapControls",
 				"OrbitControls": "examples/ko/controls/OrbitControls",
 				"PointerLockControls": "examples/ko/controls/PointerLockControls",
 				"TrackballControls": "examples/ko/controls/TrackballControls",
 				"TransformControls": "examples/ko/controls/TransformControls"
-			}
+			},
 
+			"WebXR": {
+				"XREstimatedLight": "examples/ko/webxr/XREstimatedLight"
+			}
 		}
 
 	},

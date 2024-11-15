@@ -1,6 +1,6 @@
 <html lang="en">
 	<head>
-		<title>three.js - shadertoy</title>
+		<title>three.js - wgsl/tsl node interoperability</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
@@ -8,7 +8,7 @@
 	<body>
 
 		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgpu - WGSL/TSL Node Interoperability
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgpu - wgsl/tsl node interoperability
 			<br />CRT Shader adapted from <a href="https://mini.gmshaders.com/p/gm-shaders-mini-crt" target="_blank" rel="noopener"> Xor</a>.
 		</div>
 		<div id="container">
@@ -18,9 +18,9 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"three": "../build/three.module.js",
-					"three/addons/": "./jsm/",
-					"three/nodes": "./jsm/nodes/Nodes.js"
+					"three": "../build/three.webgpu.js",
+					"three/tsl": "../build/three.webgpu.js",
+					"three/addons/": "./jsm/"
 				}
 			}
 		</script>
@@ -28,11 +28,9 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-			import WebGPU from 'three/addons/capabilities/WebGPU.js';
-			import WebGL from 'three/addons/capabilities/WebGL.js';
+			import { Fn, attribute, varyingProperty, time, uniform, wgslFn, texture, sampler, uv, clamp, float, vec2, vec3, fract, floor, positionGeometry, sin } from 'three/tsl';
 
-			import WebGPURenderer from 'three/addons/renderers/webgpu/WebGPURenderer.js';
-			import { tslFn, attribute, varyingProperty, timerLocal, uniform, wgslFn, texture, uv, clamp, float, vec2, vec3, fract, floor, MeshBasicNodeMaterial, positionGeometry, sin } from 'three/nodes';
+			import WebGPU from 'three/addons/capabilities/WebGPU.js';
 
 			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
@@ -46,8 +44,6 @@
 
 			function onWindowResize() {
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
 			}
@@ -60,11 +56,11 @@
 
 			function init() {
 
-				if ( WebGPU.isAvailable() === false && WebGL.isWebGL2Available() === false ) {
+				if ( WebGPU.isAvailable() === false ) {
 
 					document.body.appendChild( WebGPU.getErrorMessage() );
 
-					throw new Error( 'No WebGPU or WebGL2 support' );
+					throw new Error( 'No WebGPU support' );
 
 				}
 
@@ -92,7 +88,7 @@
 						vUv: vec2f,
 						tex: texture_2d<f32>,
 						texSampler: sampler,
-						crtWidth: f32, 
+						crtWidth: f32,
 						crtHeight: f32,
 						cellOffset: f32,
 						cellSize: f32,
@@ -105,16 +101,16 @@
 					) -> vec3<f32> {
 						// Convert uv into map of pixels
 						var pixel = ( vUv * 0.5 + 0.5 ) * vec2<f32>(
-							crtWidth, 
+							crtWidth,
 							crtHeight
 						);
 						// Coordinate for each cell in the pixel map
-						var coord = pixel / cellSize;
+						let coord = pixel / cellSize;
 						// Three color values for each cell (r, g, b)
-						var subcoord = coord * vec2f( 3.0, 1.0 );
-						var offset = vec2<f32>( 0, fract( floor( coord.x ) * cellOffset ) );
+						let subcoord = coord * vec2f( 3.0, 1.0 );
+						let offset = vec2<f32>( 0, fract( floor( coord.x ) * cellOffset ) );
 
-						var maskCoord = floor( coord + offset ) * cellSize;
+						let maskCoord = floor( coord + offset ) * cellSize;
 
 						var samplePoint = maskCoord / vec2<f32>(crtWidth, crtHeight);
 						samplePoint.x += fract( time * speed / 20 );
@@ -127,15 +123,15 @@
 
 						// Current implementation does not give an even amount of space to each r, g, b unit of a cell
 						// Fix/hack this by multiplying subCoord.x by cellSize at cellSizes below 6
-						var ind = floor( subcoord.x ) % 3;
+						let ind = floor( subcoord.x ) % 3;
 
 						var maskColor = vec3<f32>(
-							f32( ind == 0.0 ), 
-							f32( ind == 1.0 ), 
+							f32( ind == 0.0 ),
+							f32( ind == 1.0 ),
 							f32( ind == 2.0 )
 						) * 3.0;
 
-						var cellUV = fract( subcoord + offset ) * 2.0 - 1.0;
+						let cellUV = fract( subcoord + offset ) * 2.0 - 1.0;
 						var border: vec2<f32> = 1.0 - cellUV * cellUV * borderMask;
 
 						maskColor *= vec3f( clamp( border.x, 0.0, 1.0 ) * clamp( border.y, 0.0, 1.0) );
@@ -169,7 +165,7 @@
 
 				//
 
-				const wgslShaderMaterial = new MeshBasicNodeMaterial();
+				const wgslShaderMaterial = new THREE.MeshBasicNodeMaterial();
 
 				// Accessed attributes correspond to a Mesh or BufferGeometry's setAttribute() calls.
 				wgslShaderMaterial.positionNode = wgslVertexShader( {
@@ -180,13 +176,13 @@
 				wgslShaderMaterial.fragmentNode = wgslFragmentShader( {
 					vUv: vUv,
 					tex: texture( planetTexture ),
-					texSampler: texture( planetTexture ),
+					texSampler: sampler( planetTexture ),
 					crtWidth: crtWidthUniform,
 					crtHeight: crtHeightUniform,
 					cellOffset: cellOffsetUniform,
 					cellSize: cellSizeUniform,
 					borderMask: borderMaskUniform,
-					time: timerLocal(),
+					time: time,
 					speed: wgslShaderSpeedUniform,
 					pulseIntensity: pulseIntensityUniform,
 					pulseWidth: pulseWidthUniform,
@@ -195,14 +191,14 @@
 
 				//
 
-				const tslVertexShader = tslFn( () => {
+				const tslVertexShader = Fn( () => {
 
 					vUv.assign( uv() );
 					return positionGeometry;
 
 				} );
 
-				const tslFragmentShader = tslFn( () => {
+				const tslFragmentShader = Fn( () => {
 
 					const dimensions = vec2( crtWidthUniform, crtHeightUniform );
 					const translatedUV = vUv.mul( 0.5 ).add( 0.5 );
@@ -218,8 +214,8 @@
 
 					const maskCoord = floor( coord.add( cellOffset ) ).mul( cellSizeUniform );
 					const samplePoint = maskCoord.div( dimensions );
-					const time = timerLocal().mul( tslShaderSpeedUniform );
-					samplePoint.x = samplePoint.x.add( fract( time.div( 20 ) ) );
+					const scaledTime = time.mul( tslShaderSpeedUniform );
+					samplePoint.x = samplePoint.x.add( fract( scaledTime.div( 20 ) ) );
 					samplePoint.y = samplePoint.y.sub( 1.5 );
 
 					let color = texture( planetTexture, samplePoint );
@@ -256,7 +252,7 @@
 
 				} );
 
-				const tslShaderMaterial = new MeshBasicNodeMaterial();
+				const tslShaderMaterial = new THREE.MeshBasicNodeMaterial();
 				tslShaderMaterial.positionNode = tslVertexShader();
 				tslShaderMaterial.colorNode = tslFragmentShader();
 
@@ -273,7 +269,7 @@
 				tslQuad.position.y -= 0.5;
 				scene.add( tslQuad );
 
-				renderer = new WebGPURenderer( { antialias: true, canvas: canvas } );
+				renderer = new THREE.WebGPURenderer( { antialias: true, canvas: canvas } );
 				renderer.setPixelRatio( dpr );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.setAnimationLoop( animate );
